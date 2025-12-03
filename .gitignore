@@ -1,2 +1,16 @@
-.csv
-.parquet
+# data & secrets
+data/*
+*.parquet
+*.csv
+*.xlsx
+*.zip
+.env
+# notebooks noise
+.ipynb_checkpoints/
+# OS/IDE
+.DS_Store
+.vscode/
+data/raw/
+data/processed/
+venv/
+confit/*
