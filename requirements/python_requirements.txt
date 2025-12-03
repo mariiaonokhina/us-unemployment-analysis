@@ -1,0 +1,17 @@
+pyspark
+pandas
+numpy
+pyarrow
+dask
+dask[dataframe]
+fastparquet
+requests
+matplotlib
+seaborn
+plotly
+notebook
+jupyterlab
+ipykernel
+requests
+pyarrow
+fastparquet
