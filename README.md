@@ -14,8 +14,6 @@ This project utilizes the following directory structure:
 
 ## 💻 Notebooks and Outputs
 
-The data processing and analysis pipeline is documented in the following Jupyter notebooks:
-
 ### `1_BLS_LAUCnty_Data_Aggregation.ipynb`
 * **Action:** Cleaned and merged all raw BLS LAU county files, and aggregated data to the **State-Year level**.
 * **Output:** `data/bls_labor_force_state_level_2015_2023.parquet`.
