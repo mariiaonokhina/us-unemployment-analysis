@@ -1,5 +1,5 @@
 
-# 📊 Project Status & Data Processing Log
+# 📊 Project Status & Log
 
 ## Project Status
 
