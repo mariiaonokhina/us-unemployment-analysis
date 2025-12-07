@@ -52,3 +52,13 @@ bash scripts/download_pums.sh
 
 - This will load all the ACS PUMS 2015-2023 data into data/raw folder.
 - ACS PUMS for 2020 doesn't follow the same format (it's an experimental dataset due to COVID-19 pandemic), so it will be skipped in this analysis.
+
+Next, convert ACS PUMS data into ```.parquet``` format. This will take 3-5 minutes.
+
+From the root directory:
+
+```bash
+python3 scripts/pums_loader.py
+```
+
+This will create ```.parquet``` files inside of ```data/processed``` folder.
