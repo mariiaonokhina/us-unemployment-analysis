@@ -12,6 +12,7 @@ data/*
 .env
 
 # dont ignore
+!data/CLI/
 !data/CLI/*.xlsx
 !data/ECI_XLSX.xlsx
 
