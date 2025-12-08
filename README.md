@@ -3,9 +3,11 @@ Final Project for NYU Tandon Big Data (CS-GY 6513) Fall 2025 by Mariia Onokhina,
 
 ## Overview
 
-The difference between unemployment and wages across the United States remains a challenge, even as the national economy grows and evolves. States with similar economic situations often experience different employment outcomes. In this project, we aim to show how the disparities between unemployment and wages are linked to socio-economic factors like education levels, income, and access to job opportunities.
+## Overview
 
-Analyzing these factors with traditional data processing software is difficult because the data involved are massive, complex, and spread across multiple sources such as the U.S. Census Bureau and the Bureau of Labor Statistics. Therefore, we will use Big Data technologies such as Apache Spark, Hive, and Dask to integrate and analyze millions of socioeconomic records, aiming to identify meaningful patterns and correlations between education, income, and employment. The goal is to better understand how these factors shape labor market stability across states and industries.
+The difference between unemployment and wages across the United States remains a challenge, even as the national economy grows and evolves. States with similar economic situations often experience different employment outcomes. In this project, we aim to show how the disparities between unemployment and wages are linked to socio-economic factors like education levels, income, cost of living, occupational structure, and access to job opportunities.
+
+Traditional data processing tools are not well-suited for this task because the datasets are extremely large, come from multiple federal sources, and require substantial preprocessing and integration. To address this, we use **Apache Spark (PySpark)** together with **Pandas/NumPy** and distributed file formats (Parquet) to clean, merge, and analyze tens of millions of records from the U.S. Census Bureau and the Bureau of Labor Statistics. Our goal is to build a unified dataset and train predictive models (using **PySpark MLlib Gradient-Boosted Trees**) to better understand how economic and demographic factors shape unemployment across states.
 
 ## Datasets
 1. 2015 - 2023 Labor force data by county, annual averages. Link to Dataset: https://www.bls.gov/lau/tables.htm
@@ -15,8 +17,11 @@ Analyzing these factors with traditional data processing software is difficult b
 5. 2015 - 2023 American Community Survey Public Use Microdata Sample (ACS PUMS). Link to Dataset: https://www.census.gov/programs-surveys/acs/microdata/access.html
 
 ## Technologies Used
-- PySpark
-- Python
+
+- **PySpark / Spark MLlib** – distributed ETL and Gradient-Boosted Trees regression  
+- **Python**  
+- **Pandas, NumPy** – lightweight transformations and plotting data prep  
+- **Matplotlib, Seaborn, Plotly** – visualizations for ECI, CPI, ACS, and model diagnostics  
 
 ## Instructions on How to Load Data
 
@@ -65,7 +70,8 @@ This will create ```.parquet``` files inside of ```data/processed``` folder.
 
 ## Project Status
 
-The ETL and initial modeling stages for the first two datasets are complete.
+All major ETL pipelines are complete for BLS LAU, BLS OEWS, ECI, CPI-W, and ACS PUMS.
+These datasets are integrated into a combined state–year–occupation-level dataset, which is used to train a Gradient-Boosted Trees regression model to predict state unemployment rates.
 
 ## 📁 File Structure & Contents
 
@@ -73,16 +79,38 @@ This project utilizes the following directory structure:
 
 * `/rawdata/`: Contains all the original, unprocessed source files
 * `/data/`: Contains all the **cleaned, aggregated, and compressed Parquet files** ready for Spark analysis.
+    * `/CLI/` – CPI-W Excel files (2015–2023)
+    * ECI_XLSX.xlsx – Employment Cost Index data
+* `/data_bls/`
+    * integrated_bls_oews_state_year_occ_ecicpi.parquet – merged BLS + OEWS + ECI + CPI-W dataset
+* `/data/processed/parquet_pums/` – cleaned ACS PUMS Parquet files
+* `/notebooks/` – Jupyter notebooks for ETL, feature engineering, and modeling
+* `/scripts/` – helper scripts (including ACS PUMS download and loader)
 
+  
 ## 💻 Notebooks and Outputs
 
-### `1_BLS_LAUCnty_Data_Aggregation.ipynb`
+### `BLS_LAUCnty_Data_Aggregation.ipynb`
 * **Action:** Cleaned and merged all raw BLS LAU county files, and aggregated data to the **State-Year level**.
 * **Output:** `data/bls_labor_force_state_level_2015_2023.parquet`.
 
-### `2_BLS_OEWS_Data_Aggregation.ipynb`
+### `BLS_OEWS_Data_Aggregation.ipynb`
 * **Action:** Cleaned and merged all raw OEWS files.
 * **Output:** `data/oews_data_2015_2023_cleaned.csv`.
+
+### `ECI_CPI_Dataset_Processing.ipynb`
+* **Action:**
+    * Parses ECI (Employment Cost Index) from data/ECI_XLSX.xlsx.
+    * Parses CPI-W category files from data/CLI/*.xlsx.
+    * Computes yearly ECI wage growth, CPI-W inflation, and real wage growth (ECI − CPI).
+* **Output:** Used to enrich the integrated BLS/OEWS parquet with eci_pct_change, cpi_inflation_pct, and real_wage_growth features.
+
+###   `ACS_PUMS_cleaning.ipynb
+* **Action:** Reads ACS PUMS Parquet files from data/processed/parquet_pums/ and cleans demographic, education, disability, labor-force, and wage variables.
+* **Output:** State–year level aggregates such as:
+    * acs_share_bach_plus, acs_share_disabled
+    * acs_labor_force_rate, acs_unemp_rate_pums
+    * acs_mean_wage, acs_median_wage
 
 ### `analyzing.ipynb`
 * **Action:** **JOIN** BLS data with OEWS data **ON** State FIPS and Year.
@@ -92,17 +120,27 @@ This project utilizes the following directory structure:
     * Spearman Correlation (Monotonic): $\rho=-0.0396$ 
 
 ### `3_Predictive_Modeling.ipynb`
-* Trained and validated the model.
+* **Action:**
+    * Loads the integrated dataset (BLS + OEWS + ECI + CPI-W + ACS PUMS).
+    * Performs missing-value imputation with medians for numeric features.
+    * Encodes categorical variables (State_FIPS, OCC_CODE) using StringIndexer + OneHotEncoder.
+    * Assembles all features into a single features vector via VectorAssembler.
+    * Trains a Gradient-Boosted Trees Regressor (PySpark MLlib) to predict state unemployment rate.
+    * Evaluates the model with R² and Mean Absolute Error (MAE) and visualizes:
+        * Predicted vs. actual unemployment rates
+        * Residual plot (errors vs. predictions)
 * **Output:** No file output; it produced the final model metrics.
 
 ## Model Performance & Next Step
 
 | Metric | Result | Project Target | Status |
 | :--- | :--- | :--- | :--- |
-| **R²** | 0.90 [cite: 23] | $> 0.85$ | **Met** |
-| **MAE** | $\approx 0.40$ | $< 0.005$ | **Significantly Above Target** |
+| **R²** | 0.9453 | $> 0.85$ | **Met** |
+| **MAE** | 0.2968 | $< 0.005$ | **Significantly Above Target** |
 
-### 🛑 Next Step
+### Next Steps...
 
-To reduce the MAE from $0.40$ down to the target of $0.005$, we need integrate with the ACS PUMS dataset.
-After cleaning and aggregating the massive ACS PUMS files, save the final aggregated PUMS data as a Parquet file in the /data directory and you can aggregate features like Education Level and Income by State and Year, and train the models
+To reduce the MAE from ~$0.30$ down to the target of $0.005$:
+In the future, we plan to:
+* Perform hyperparameter tuning (e.g., CrossValidator or TrainValidationSplit for GBT parameters such as maxDepth, maxIter, and stepSize).
+* Experiment with alternative models in PySpark MLlib (e.g., Random Forest Regressor, linear models with regularization).
