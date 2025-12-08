@@ -3,8 +3,6 @@ Final Project for NYU Tandon Big Data (CS-GY 6513) Fall 2025 by Mariia Onokhina,
 
 ## Overview
 
-## Overview
-
 The difference between unemployment and wages across the United States remains a challenge, even as the national economy grows and evolves. States with similar economic situations often experience different employment outcomes. In this project, we aim to show how the disparities between unemployment and wages are linked to socio-economic factors like education levels, income, cost of living, occupational structure, and access to job opportunities.
 
 Traditional data processing tools are not well-suited for this task because the datasets are extremely large, come from multiple federal sources, and require substantial preprocessing and integration. To address this, we use **Apache Spark (PySpark)** together with **Pandas/NumPy** and distributed file formats (Parquet) to clean, merge, and analyze tens of millions of records from the U.S. Census Bureau and the Bureau of Labor Statistics. Our goal is to build a unified dataset and train predictive models (using **PySpark MLlib Gradient-Boosted Trees**) to better understand how economic and demographic factors shape unemployment across states.
