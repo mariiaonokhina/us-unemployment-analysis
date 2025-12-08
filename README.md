@@ -117,7 +117,7 @@ This project utilizes the following directory structure:
     * Pearson Correlation (Linear): $r=-0.0248$
     * Spearman Correlation (Monotonic): $\rho=-0.0396$ 
 
-### `3_Predictive_Modeling.ipynb`
+### `Predictive_Modeling_final.ipynb`
 * **Action:**
     * Loads the integrated dataset (BLS + OEWS + ECI + CPI-W + ACS PUMS).
     * Performs missing-value imputation with medians for numeric features.
