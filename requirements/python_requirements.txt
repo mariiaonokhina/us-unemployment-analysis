@@ -15,3 +15,5 @@ ipykernel
 requests
 pyarrow
 fastparquet
+openpyxl
+tabulate
