@@ -4,6 +4,9 @@
 # data & secrets
 data/*
 *.parquet
+# DO NOT ignore this specific file
+!data_bls/integrated_bls_oews_state_year_occ_ecicpi.parquet
+
 *.csv
 *.xlsx
 *.zip
