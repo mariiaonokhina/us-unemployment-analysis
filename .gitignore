@@ -6,13 +6,15 @@ data/*
 *.parquet
 # DO NOT ignore this specific file
 !data_bls/integrated_bls_oews_state_year_occ_ecicpi.parquet
-!data/CLI/*.xlsx
-!data/ECI_XLSX.xlsx
-
 *.csv
 *.xlsx
 *.zip
 .env
+
+# dont ignore
+!data/CLI/*.xlsx
+!data/ECI_XLSX.xlsx
+
 
 # notebooks noise
 .ipynb_checkpoints/
