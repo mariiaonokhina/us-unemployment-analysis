@@ -134,7 +134,7 @@ This project utilizes the following directory structure:
 | Metric | Result | Project Target | Status |
 | :--- | :--- | :--- | :--- |
 | **R²** | 0.9453 | $> 0.85$ | **Met** |
-| **MAE** | 0.2968 | $< 0.005$ | **Significantly Above Target** |
+| **MAE** | 0.2968 | $< 0.05$ | **Significantly Above Target** |
 
 ### Next Steps...
 
